@@ -13,7 +13,7 @@
 #include <DHT.h>
 #include "SDS011.h"
 
-#define CYCLETIME 60000     // LoRa message cycle time
+#define CYCLETIME 120000     // LoRa message cycle time (2 minutes)
 #define GPSTIME   100000    // max timeout to get a GPS fix
 #define BAUDRATE_GPS 9600
 #define BAUDRATE_SDS 9600
@@ -135,7 +135,7 @@ void worker( ) {
   Location location;
   long start = millis();
   
-  if( msgCount % 5 == 1)        // a GPS cycle
+  if( msgCount % 60 == 1)        // a GPS cycle
     digitalWrite(Vext, LOW);    // switch the gps power on in advance (gain is 10 sec)
   
   processMeasurement( measurement);   // read temp, hum, and PM
@@ -144,7 +144,7 @@ void worker( ) {
   i += sizeof( Measurement);
 
   bool gpsfix = false;
-  if( msgCount % 5 == 1) {     // a GPS cycle, so get GPS
+  if( msgCount % 60 == 1) {     // a GPS cycle, so get GPS
     gpsfix = processGPS( GPSTIME, location);
     
     if (gpsfix) {              // if a fix, append GPS info in the payload 
