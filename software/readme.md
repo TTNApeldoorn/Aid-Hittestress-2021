@@ -4,25 +4,19 @@ The hittestress node is based on a Heltec SpaceCube board. This board offers bes
 
 ### System Overview
 Three sensors are connected to the node:
-```mermaid
-graph LR
-A(Temp/Hum<br/>AM2305) -- spi --> C(Heltec<br/>CubCell) 
-C-- LoRa --> T(TTN)
-S(Dust<br/>SDS011) -- serial --> C
-G(GPS<br/>ATGM33) -- serial --> C
-```
+
+![link](./overview.png)
+
 The Sensor sends each two minutes the Temperature, Humidity, Dust, PM10/PM2,5 and battery level to TTN. Each 2 hours also the GPS position of the sensor is send to TTN.
 
 ### Prototype
 The development is currently in a prototyping phase. 
 Below the prototype wiring diagram. 
-![link](https://marcelmeek.nl/prototype-sensor.svg)
+![link](./prototype-sensor.svg)
 
 ### Power management
-The sensor is powered by 220V at night and during daylight the sensor is powered by the 3.7V LiPo.  At night the LiPo is charged.
-To save power consumption, the CubeCell is forced in a deep sleep between two message cycles. The GPS is powered via pin Vext, which is only active when requesting the GPS location.  The dust sensor SDS011 is forced in a sleep by a software command. The SDS011 air-fan needs 5V, so a DC step-up is placed in the supply line.
-
-
+AT night the sensor is powered by 220V, during daylight the sensor is powered by the 3.7V LiPo. At night the LiPo will be charged.
+To save power consumption, the CubeCell is forced into a deep sleep between two message cycles.  The GPS is powered via pin Vext, which is only active when requesting the GPS location.  The dust sensor SDS011 is forced in a sleep by a software command. The SDS011 air-fan needs 5V, so a DC step-up is placed in the supply line.
 
 ### Software prerequisites
 - Arduino development environmnet minumum version 1.8
@@ -30,10 +24,10 @@ To save power consumption, the CubeCell is forced in a deep sleep between two me
 - DHT Adafruit sensor library
 - TinyGPS++ library  (Mikal Hart)
 
-The LoRa stack and the SoftwareSerial is part of the CubeCell core, the adapted SDS011 library is present in the Hittestress source code.
+The LoRa stack and the SoftwareSerial is part of the CubeCell core. The adapted SDS011 library is present in the Hittestress source code.
 
 ### Arduino settings
-Be sure that the correct board is selected and select the correct Lorawan parameters in the Arduino->tools:
+Be sure that the correct board is selected and select the correct LoraWan parameters in the menu Arduino->tools:
 - Board: CubeCel-Board (HTTC-AB01)
 - LORAWAN settings: 
   - REGION_EU868
@@ -53,7 +47,7 @@ Messages are sent on TTN port 15. The format of te payload is:
 - byte 4, 5: Int16; PM10 * 100
 - byte 6, 7: Int16; PM2.5 * 100
 - byte 8, 9: Int16; Vbat * 1000
-- byte 10-13: Float: Latitude #
+- byte 10-13: Float: Latitude
 - byte 14-17: Float: Longitude 
 
 Note: Latitude and Longitude are only present once per 4 hours
