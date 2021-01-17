@@ -258,9 +258,9 @@ PM_TX
 Text Label 3450 5350 0    50   ~ 0
 5V_EXT
 Text Label 3450 5050 0    50   ~ 0
-SDS011_TX
+SDS011_TXD
 Text Label 3450 5150 0    50   ~ 0
-SDS011_RX
+SDS011_RXD
 Text Notes 3700 4750 0    50   ~ 0
 Particlesensor SDS011
 $Comp
@@ -411,4 +411,36 @@ F 3 "" H 9600 2450 50  0001 C CNN
 	1    9600 2450
 	1    0    0    -1  
 $EndComp
+$Comp
+L Connector_Generic:Conn_01x02 J4
+U 1 1 600437D4
+P 4750 6450
+F 0 "J4" H 4830 6442 50  0000 L CNN
+F 1 "Conn_01x02" H 4830 6351 50  0000 L CNN
+F 2 "hitteStress21-pcb:Wurth_2109_P2.54_2x1" H 4750 6450 50  0001 C CNN
+F 3 "~" H 4750 6450 50  0001 C CNN
+	1    4750 6450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4550 6450 3400 6450
+Wire Wire Line
+	4550 6550 4400 6550
+Wire Wire Line
+	4400 6550 4400 6700
+$Comp
+L SparkFun-PowerSymbols:GND #GND0101
+U 1 1 60046B99
+P 4400 6700
+F 0 "#GND0101" H 4450 6650 45  0001 L BNN
+F 1 "GND" H 4400 6530 45  0000 C CNN
+F 2 "" H 4400 6600 60  0001 C CNN
+F 3 "" H 4400 6600 60  0001 C CNN
+	1    4400 6700
+	1    0    0    -1  
+$EndComp
+Text Label 3450 6450 0    50   ~ 0
+PV
+Text Notes 4000 6250 0    50   ~ 0
+PV panel
 $EndSCHEMATC
