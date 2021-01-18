@@ -3,8 +3,7 @@
 ## About this repository
 This repository holds all information te build de AiD-Heatstress-sensor. 
 
-** At this moment the repository presents work in progress.
-Changes may aoocur any tme without notice **
+**At this moment the repository presents work in progress. Changes may aoocur any tme without notice!!**
 
 
 
