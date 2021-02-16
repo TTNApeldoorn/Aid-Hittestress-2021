@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source C:\Users\drasv\GitHub\Aid-Hittestress-2021\hardware\pcb\hitteStress21-pcb\hitteStress21-pcb.sch)
-    (date "17/01/2021 13:28:53")
+    (date "16/02/2021 19:54:42")
     (tool "Eeschema (5.1.6)-1")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
