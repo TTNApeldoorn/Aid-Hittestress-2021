@@ -14,7 +14,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L HittStress21:IRM-03 PSU2
+L hitteStress21-pcb-rescue:IRM-03-HittStress21 PSU2
 U 1 1 5FFF7A4A
 P 3100 2000
 F 0 "PSU2" H 3100 2365 50  0000 C CNN
@@ -25,7 +25,7 @@ F 3 "" H 3100 2050 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L HittStress21:MINIDCDCBOOST5V PSU1
+L hitteStress21-pcb-rescue:MINIDCDCBOOST5V-HittStress21 PSU1
 U 1 1 5FFF80A3
 P 1950 5250
 F 0 "PSU1" H 1950 5665 50  0000 C CNN
@@ -47,7 +47,7 @@ F 3 "~" H 1500 2050 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L SparkFun-PowerSymbols:GND #GND04
+L hitteStress21-pcb-rescue:GND-SparkFun-PowerSymbols #GND04
 U 1 1 5FFFEB8C
 P 5350 3100
 F 0 "#GND04" H 5400 3050 45  0001 L BNN
@@ -58,7 +58,7 @@ F 3 "" H 5350 3000 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L SparkFun-PowerSymbols:GND #GND06
+L hitteStress21-pcb-rescue:GND-SparkFun-PowerSymbols #GND06
 U 1 1 5FFFF63E
 P 7550 3100
 F 0 "#GND06" H 7600 3050 45  0001 L BNN
@@ -88,7 +88,7 @@ Wire Wire Line
 Text Label 1150 5250 0    50   ~ 0
 3V3
 $Comp
-L SparkFun-PowerSymbols:GND #GND01
+L hitteStress21-pcb-rescue:GND-SparkFun-PowerSymbols #GND01
 U 1 1 60000A77
 P 1950 5800
 F 0 "#GND01" H 2000 5750 45  0001 L BNN
@@ -142,7 +142,7 @@ Wire Wire Line
 Text Label 7300 2750 0    50   ~ 0
 5V
 $Comp
-L SparkFun-PowerSymbols:GND #GND02
+L hitteStress21-pcb-rescue:GND-SparkFun-PowerSymbols #GND02
 U 1 1 60003428
 P 3600 2200
 F 0 "#GND02" H 3650 2150 45  0001 L BNN
@@ -179,7 +179,7 @@ Text Label 5500 2650 0    50   ~ 0
 Text Label 5500 2550 0    50   ~ 0
 3V3_EXT
 $Comp
-L HittStress21:HTCC-AB01 U1
+L hitteStress21-pcb-rescue:HTCC-AB01-HittStress21 U1
 U 1 1 60009C11
 P 6450 2400
 F 0 "U1" H 6450 3265 50  0000 C CNN
@@ -209,7 +209,7 @@ Wire Wire Line
 Wire Wire Line
 	4400 5250 4400 5550
 $Comp
-L SparkFun-PowerSymbols:GND #GND03
+L hitteStress21-pcb-rescue:GND-SparkFun-PowerSymbols #GND03
 U 1 1 60011F1B
 P 4400 5550
 F 0 "#GND03" H 4450 5500 45  0001 L BNN
@@ -275,7 +275,7 @@ F 3 "~" H 7450 5150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L SparkFun-PowerSymbols:GND #GND05
+L hitteStress21-pcb-rescue:GND-SparkFun-PowerSymbols #GND05
 U 1 1 60021D16
 P 7150 5600
 F 0 "#GND05" H 7200 5550 45  0001 L BNN
@@ -348,7 +348,7 @@ Connection ~ 7150 5550
 Wire Wire Line
 	7150 5550 7150 5600
 $Comp
-L HittStress21:GPS U2
+L hitteStress21-pcb-rescue:GPS-HittStress21 U2
 U 1 1 6003B0A4
 P 9800 5350
 F 0 "U2" H 10128 5396 50  0000 L CNN
@@ -369,7 +369,7 @@ Wire Wire Line
 Wire Wire Line
 	9100 5250 9100 5800
 $Comp
-L SparkFun-PowerSymbols:GND #GND07
+L hitteStress21-pcb-rescue:GND-SparkFun-PowerSymbols #GND07
 U 1 1 6004350F
 P 9100 5800
 F 0 "#GND07" H 9150 5750 45  0001 L BNN
@@ -401,7 +401,7 @@ $EndComp
 Wire Wire Line
 	3950 5350 3400 5350
 $Comp
-L HittStress21:LiPo_3V7 B1
+L hitteStress21-pcb-rescue:LiPo_3V7-HittStress21 B1
 U 1 1 6003A431
 P 9600 2450
 F 0 "B1" H 9978 2496 50  0000 L CNN
@@ -429,7 +429,7 @@ Wire Wire Line
 Wire Wire Line
 	4400 6550 4400 6700
 $Comp
-L SparkFun-PowerSymbols:GND #GND0101
+L hitteStress21-pcb-rescue:GND-SparkFun-PowerSymbols #GND0101
 U 1 1 60046B99
 P 4400 6700
 F 0 "#GND0101" H 4450 6650 45  0001 L BNN

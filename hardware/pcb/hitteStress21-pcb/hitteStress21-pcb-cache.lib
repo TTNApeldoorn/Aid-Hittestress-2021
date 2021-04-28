@@ -139,11 +139,25 @@ X ~ 2 0 -200 100 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# HittStress21_GPS
+# hitteStress21-pcb-rescue_GND-SparkFun-PowerSymbols
 #
-DEF HittStress21_GPS U 0 40 Y Y 1 F N
+DEF hitteStress21-pcb-rescue_GND-SparkFun-PowerSymbols #GND 0 40 N N 1 L P
+F0 "#GND" 50 -50 45 H I L BNN
+F1 "hitteStress21-pcb-rescue_GND-SparkFun-PowerSymbols" -70 -200 45 H V L BNN
+F2 "" 0 -100 60 H I C CNN
+F3 "" 0 -100 60 H I C CNN
+DRAW
+P 2 1 0 0 -75 -100 75 -100 N
+P 2 1 0 0 0 0 0 -100 N
+X GND ~ 0 0 0 D 40 40 1 1 W N
+ENDDRAW
+ENDDEF
+#
+# hitteStress21-pcb-rescue_GPS-HittStress21
+#
+DEF hitteStress21-pcb-rescue_GPS-HittStress21 U 0 40 Y Y 1 F N
 F0 "U" 0 100 50 H V C CNN
-F1 "HittStress21_GPS" 0 -50 50 H V C CNN
+F1 "hitteStress21-pcb-rescue_GPS-HittStress21" 0 -50 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
@@ -156,11 +170,11 @@ X 1PPS 5 -550 -200 100 R 50 50 1 1 I
 ENDDRAW
 ENDDEF
 #
-# HittStress21_HTCC-AB01
+# hitteStress21-pcb-rescue_HTCC-AB01-HittStress21
 #
-DEF HittStress21_HTCC-AB01 U 0 40 Y Y 1 F N
+DEF hitteStress21-pcb-rescue_HTCC-AB01-HittStress21 U 0 40 Y Y 1 F N
 F0 "U" -350 -750 50 H V C CNN
-F1 "HittStress21_HTCC-AB01" -150 750 50 H V C CNN
+F1 "hitteStress21-pcb-rescue_HTCC-AB01-HittStress21" -150 750 50 H V C CNN
 F2 "" 0 50 50 H I C CNN
 F3 "" 0 50 50 H I C CNN
 DRAW
@@ -192,11 +206,11 @@ X 3V3 9 -500 -250 100 R 50 50 1 1 w
 ENDDRAW
 ENDDEF
 #
-# HittStress21_IRM-03
+# hitteStress21-pcb-rescue_IRM-03-HittStress21
 #
-DEF HittStress21_IRM-03 PSU 0 40 Y Y 1 F N
+DEF hitteStress21-pcb-rescue_IRM-03-HittStress21 PSU 0 40 Y Y 1 F N
 F0 "PSU" -100 -250 50 H V C CNN
-F1 "HittStress21_IRM-03" -50 250 50 H V C CNN
+F1 "hitteStress21-pcb-rescue_IRM-03-HittStress21" -50 250 50 H V C CNN
 F2 "" 0 50 50 H I C CNN
 F3 "" 0 50 50 H I C CNN
 DRAW
@@ -209,11 +223,11 @@ X GND 5 350 -100 100 L 50 50 1 1 w
 ENDDRAW
 ENDDEF
 #
-# HittStress21_LiPo_3V7
+# hitteStress21-pcb-rescue_LiPo_3V7-HittStress21
 #
-DEF HittStress21_LiPo_3V7 B 0 40 Y Y 1 F N
+DEF hitteStress21-pcb-rescue_LiPo_3V7-HittStress21 B 0 40 Y Y 1 F N
 F0 "B" 0 0 50 H V C CNN
-F1 "HittStress21_LiPo_3V7" 0 300 50 H V C CNN
+F1 "hitteStress21-pcb-rescue_LiPo_3V7-HittStress21" 0 300 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
@@ -221,11 +235,11 @@ P 6 0 1 0 -350 550 300 550 350 550 350 -550 -350 -550 -350 550 N
 ENDDRAW
 ENDDEF
 #
-# HittStress21_MINIDCDCBOOST5V
+# hitteStress21-pcb-rescue_MINIDCDCBOOST5V-HittStress21
 #
-DEF HittStress21_MINIDCDCBOOST5V PSU 0 40 Y Y 1 F N
+DEF hitteStress21-pcb-rescue_MINIDCDCBOOST5V-HittStress21 PSU 0 40 Y Y 1 F N
 F0 "PSU" 150 -300 50 H V C CNN
-F1 "HittStress21_MINIDCDCBOOST5V" 0 350 50 H V C CNN
+F1 "hitteStress21-pcb-rescue_MINIDCDCBOOST5V-HittStress21" 0 350 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
@@ -233,20 +247,6 @@ S -300 250 300 -250 0 1 0 f
 X Vin 1 -400 0 100 R 50 50 1 1 W
 X GND 2 0 -350 100 U 50 50 1 1 B
 X 5V 3 400 0 100 L 50 50 1 1 w
-ENDDRAW
-ENDDEF
-#
-# SparkFun-PowerSymbols_GND
-#
-DEF SparkFun-PowerSymbols_GND #GND 0 40 N N 1 L P
-F0 "#GND" 50 -50 45 H I L BNN
-F1 "SparkFun-PowerSymbols_GND" -70 -200 45 H V L BNN
-F2 "" 0 -100 60 H I C CNN
-F3 "" 0 -100 60 H I C CNN
-DRAW
-P 2 1 0 0 -75 -100 75 -100 N
-P 2 1 0 0 0 0 0 -100 N
-X GND ~ 0 0 0 D 40 40 1 1 W N
 ENDDRAW
 ENDDEF
 #

@@ -258,9 +258,9 @@ PM_TX
 Text Label 3450 5350 0    50   ~ 0
 5V_EXT
 Text Label 3450 5050 0    50   ~ 0
-SDS011_TX
+SDS011_TXD
 Text Label 3450 5150 0    50   ~ 0
-SDS011_RX
+SDS011_RXD
 Text Notes 3700 4750 0    50   ~ 0
 Particlesensor SDS011
 $Comp
