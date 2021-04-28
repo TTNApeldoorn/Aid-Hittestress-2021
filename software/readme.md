@@ -7,7 +7,7 @@ Three sensors are connected to the node:
 
 ![link](./overview.png)
 
-The Sensor sends each two minutes the Temperature, Humidity, Dust, PM10/PM2,5 and battery level to TTN. Each 2 hours also the GPS position of the sensor is send to TTN.
+The Sensor sends each two minutes the Temperature, Humidity, Dust, PM10/PM2,5 to TTN. Each hour the Status and GPS position of the sensor is send to TTN.
 
 ### Prototype
 The development is currently in a prototyping phase. 
@@ -40,14 +40,50 @@ Be sure that the correct board is selected and select the correct LoraWan parame
   - RGB ACTIVE
   - Debug None
 
+### TTN keys
+The following OTAA keys must be set in the file LoRaWan.h viz. **appEui** and **appKey**.
+**devEui** key must be left empty, this one is automatically set from the unique chipid of the HellTec board during startup.
+This makes it possible the use the same code for multiple sensors in your project.
+
 ### Payload binary 
-Messages are sent on TTN port 15. The format of te payload is:
+Messages are sent on TTN port 15 (measurement data) and port 16 (status data)
+
+Measurement payload on port 15:
 - byte 0, 1:  Int16; Temperature * 100
 - byte 2, 3: Int16; Humidity * 100
 - byte 4, 5: Int16; PM10 * 100
 - byte 6, 7: Int16; PM2.5 * 100
-- byte 8, 9: Int16; Vbat * 1000
-- byte 10-13: Float: Latitude
-- byte 14-17: Float: Longitude 
 
-Note: Latitude and Longitude are only present once per 4 hours
+Status Payload on port 16:
+- byte 0-3: Float: Latitude
+- byte 4-7: Float: Longitude
+- byte 8, 9: Int16; Altitude
+- byte 10,11: InT16; Hdop * 1000
+- byte 12,13: Int16; Vbatttery * 1000
+- byte 14,15: Int16; Software version * 100
+
+Note: Status message is sent each hour
+
+### Output Payload decoder
+The Payload decoder converts the binary payload to Json.<br>
+Json example of a measurement message:
+```
+{ 
+  "pm10": 0.9,
+  "pm2p5": 0.46,
+  "rh": 56.3,
+  "temp": 7.5
+}
+```
+Json Example of a status message
+```
+{ 
+  "latitude": 52.2184104,
+  "longitude": 5.964393,
+  "alt": 56,
+  "hdop": 1.8,
+  "vbat": 4.026,
+  "SwVer": 0.9
+}
+```
+
