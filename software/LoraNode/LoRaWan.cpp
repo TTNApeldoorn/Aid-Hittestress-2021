@@ -3,7 +3,6 @@
   Hide he Heltec framework for the user and expose the convenient methods
   Author Marcel Meek
   Date 13/1/2021
-  Update 25/4/2021 Use Unique ChipID for TTN DEVEUI
   --------------------------------------------------------------------*/
 
 #include "LoRaWan.h"
@@ -18,7 +17,7 @@
 */
 
 /* OTAA para*/
-uint8_t devEui[8];  // Leave empty, the chip-id of thec Heltec board is filled in after start-up
+uint8_t devEui[8];  // Leave empty, the chip-id of the Heltec board is filled in after start-up
 uint8_t appEui[] = { 0x70, 0xB3, 0xD5, 0x7E, 0xD0, 0x01, 0xFE, 0x1F };
 uint8_t appKey[] = { 0x46, 0xBF, 0x7A, 0x1A, 0x2E, 0x95, 0x9F, 0xE9, 0xA6, 0xE8, 0xAE, 0x12, 0x12, 0xE5, 0x22, 0x35};
 
@@ -66,6 +65,17 @@ uint16_t baseline;
 int maxtry = 50;
 
 static void (*_callback)() = NULL; 
+static void (*_rxCallback)(unsigned int, uint8_t*, unsigned int) = NULL;
+
+
+//downlink data handle function
+void downLinkDataHandle(McpsIndication_t *mcpsIndication)
+{
+  Serial.printf("Download message slot: %s\n", mcpsIndication->RxSlot?"RXWIN2":"RXWIN1");
+  if( _rxCallback) {
+    _rxCallback( mcpsIndication->Port, mcpsIndication->Buffer , mcpsIndication->BufferSize);
+  }
+}
 
 LoRaWan::LoRaWan() {
   _callback = NULL;
@@ -90,7 +100,7 @@ void LoRaWan::begin() {
   printf("\n");
 
   deviceState = DEVICE_STATE_INIT;
-  printf("deviceState=%d\n", deviceState);
+  //printf("deviceState=%d\n", deviceState);
   LoRaWAN.ifskipjoin();
 }
 
@@ -102,10 +112,15 @@ void LoRaWan::setWorker( void (*callback)()) {
   _callback = callback;
 }
 
+void LoRaWan::setRxHandler( void (*callback)(unsigned int, uint8_t*, unsigned int)) {
+  _rxCallback = callback;
+}
+
 void LoRaWan::sendMsg(int port, void* buf, int len){
   appPort = port;
   appDataSize = len;
   memcpy( appData, buf, len);
+  LoRaWAN.send();
 }
 
 void LoRaWan::process() {
@@ -133,7 +148,7 @@ void LoRaWan::process() {
         printf("DEVICE_STATE_SEND\n");
         if( _callback) {
           _callback();
-          LoRaWAN.send();
+          //LoRaWAN.send();
         }
         deviceState = DEVICE_STATE_CYCLE;
         break;

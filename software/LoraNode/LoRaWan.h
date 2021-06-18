@@ -15,6 +15,8 @@ class LoRaWan {
     void begin();
     void sendMsg(int port, void* buf, int len);
     void setWorker( void (*callback)());
+    void setRxHandler( void (*callback)(unsigned int, uint8_t*, unsigned int));
+    
     void setSleepTime( int sleepTime);
     void process();
    

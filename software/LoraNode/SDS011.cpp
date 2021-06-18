@@ -74,7 +74,7 @@ void SDS011::sleep() {
   for (uint8_t i = 0; i < 19; i++) {
     stream->write(SDSCMD[i]);
   }
-  //stream->flush();
+  stream->flush();
 }
 
 // --------------------------------------------------------
@@ -88,5 +88,6 @@ void SDS011::wakeup() {
   for (uint8_t i = 0; i < 19; i++) {
     stream->write(SDSCMD[i]);
   }
-  //stream->flush();
+  stream->flush();
+  
 }
