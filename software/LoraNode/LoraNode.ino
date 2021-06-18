@@ -16,9 +16,7 @@
 
 #define CYCLETIME 120000     // LoRa message cycle time
 #define GPSTIMEOUT 50000    // max timeout to get a GPS fix
-#define BAUDRATE_GPS 9600
-#define BAUDRATE_SDS 9600
-#define VERSION 0.9
+#define VERSION 1.2
 
 // payload structs
 struct Measurement {
@@ -29,13 +27,22 @@ struct Status {
   int16_t alt, hdop, batt, version;
 };
 
+#define GPS_RX  GPIO0
+#define GPS_TX  GPIO5
+#define SDS_RX  GPIO3
+#define SDS_TX  GPIO2
+
 // NOTE: there are two SofwtareSerials, one for the SDS and one for the GPS. 
 // They can't be used simultaneously. Select them exclusively by "softwareSerial.begin()" function.
-SoftwareSerial portGPS(GPIO0, GPIO5);  // RX / TX    // GPS pinning
-SoftwareSerial portSDS(GPIO3, GPIO2);   // RX / TX   // SDS pinning
-SDS011 sds( portSDS);
+SoftwareSerial* portGPS = NULL;
+SoftwareSerial* portSDS = NULL;
+SDS011* sds = NULL;
 
-long msgCount = 0;           // message count
+static long msgCount = 0;           // message count
+static boolean longSleep = false;   // longsleep becomes active, when battery is low
+//static SoftwareSerial* softSerial = NULL;           //NULL not assigned
+static int vbat = 0;
+
 DHT dht(GPIO1, DHT22);       // Initialize DHT (in our case AM2302) sensor for normal 16mhz Arduino
 
 TinyGPSPlus tinyGpsPlus;  // The TinyGPS++ object
@@ -55,9 +62,9 @@ void readDHT( float &t, float &h) {
 // subsequently the sensor is read 5 times, the average value will be returnd
 void readSDS( float &pm25, float &pm10) {
   printf("readSDS\n");
-  portSDS.begin( BAUDRATE_SDS);     // switch to SDS serial port
-  delay(200);
-  sds.wakeup();
+
+  sds->wakeup(); delay(500);  
+  sds->wakeup();  // command sometime fails
   delay( 5000); // let air flow for 5 sec.
 
   // read 5 times and take average
@@ -66,7 +73,7 @@ void readSDS( float &pm25, float &pm10) {
 
   for(int i=0; i<5; i++) {
     delay(1000);
-    if( sds.read( &pm25, &pm10) ) {
+    if( sds->read( &pm25, &pm10) ) {
       sum10 += pm10;
       sum25 += pm25;
       count++;
@@ -77,7 +84,7 @@ void readSDS( float &pm25, float &pm10) {
   pm25 = sum25 / count;
   //printf("count=%d\n", count);
   
-  sds.sleep();
+  sds->sleep();
   delay(100);
 }
 
@@ -85,14 +92,24 @@ void readSDS( float &pm25, float &pm10) {
 // return true, if a fix is detected within the timeout.
 bool processStatus( Status &status) {
   printf("processStatus\n");
-  portGPS.begin(BAUDRATE_GPS);        // switch to GPS serial port
+
+  // first detach SDS
+  delete sds;
+  delete portSDS;
+  sds = NULL;
+  portSDS = NULL;
+  delay( 200);
+
+  // attach soft Serial to GPS
+  portGPS = new SoftwareSerial( GPS_RX, GPS_TX);
+  portGPS->begin( 9600); delay( 200);
 
   bool fix = false;
   int i = 0;
   long start = millis();
   while( millis() - start < GPSTIMEOUT) {   // leave loop after timout
-    if( portGPS.available() > 0 ) {
-      char c = portGPS.read();
+    if( portGPS->available() > 0 ) {
+      char c = portGPS->read();
       //Serial.print(c);
       tinyGpsPlus.encode( c); i++;
       if( tinyGpsPlus.location.isUpdated()) {
@@ -106,7 +123,7 @@ bool processStatus( Status &status) {
     }
   }
    // printf("GPS chars read:%d\n", i);
-  status.batt = getBatteryVoltage();
+  status.batt = vbat;
   status.version = VERSION * 100;
   Serial.print("lat: ");Serial.print( status.lat);
   Serial.print(" lon: ");Serial.print( status.lng);
@@ -114,6 +131,18 @@ bool processStatus( Status &status) {
   Serial.print(" hdop: "); Serial.print( status.hdop / 1000.0);
   Serial.print(" batt: "); Serial.print( status.batt / 1000.0);
   Serial.print(" version: "); Serial.println( status.version / 100.0);
+
+  // detach GPS
+  delete portGPS;
+  portGPS = NULL;
+  delay( 200);
+
+  // assign soft Serial to SDS
+  portSDS = new SoftwareSerial( SDS_RX, SDS_TX);
+  portSDS->begin( 9600); delay( 200);
+  sds = new SDS011( *portSDS);
+
+  
   return fix;
 }
 
@@ -121,33 +150,34 @@ bool processStatus( Status &status) {
 // read temperature, humidity, pm10, pm2.5 and battery
 void processMeasurement( Measurement &m) {
   printf("processMeasurement\n");
-  float t, h, pm25, pm10;
+  float t, h, t2, h2, pm25, pm10;
   readDHT( t, h);
   readSDS( pm25, pm10);  
-  m.temp = t*100;
-  m.hum = h*100;
+  readDHT( t2, h2);        // read for second time
+  t =  (t + t2)/ 2.0;      // take average
+  h =  (h + h2)/ 2.0;
+  m.temp = t * 100;
+  m.hum = h * 100;
   m.pm2_5 = pm25*100;
   m.pm10 = pm10*100;
   Serial.print( "temp="); Serial.print( t);
-  Serial.print( " hum="); Serial.print( h);
-  Serial.print( " pm10="); Serial.print( pm10);
+  Serial.print( " hum="); Serial.print(  h);
+  Serial.print( " pm10="); Serial.print( pm10 );
   Serial.print( " pm25="); Serial.println( pm25);
 }
 
-// work process, called by the Heltec framework after deepsleep timeout
-// prepare Lora Message
-// Note: The message prepared in the worker will be sent afterwards (so only one message at the time)
-void worker( ) {
+// prepare and send Lora Message
+void procesSensors( ) {
   printf( "worker count=%d\n", msgCount);  
   long start = millis();
 
-  if(  msgCount % 30 == 1) {  // a status cycle (each 30 cycles, thus 30 x 2 min. is each hour)  
+  if( msgCount % 30 == 1) {  // a status cycle (each 30 cycles, thus 30 x 2 min. is each hour)  
     digitalWrite(Vext, LOW);    // switch the gps power on
     Status status = {0.0, 0.0, 0, 0, 0, 0};
     processStatus( status);
     printf("send status len=%d\n", sizeof(status));
-    loRaWan.sendMsg( 16, (void*)&status, sizeof(status));     // status port 16
     digitalWrite(Vext, HIGH);   // switch gps power off   
+    loRaWan.sendMsg( 16, (void*)&status, sizeof(status));     // status port 16
   }
   else {  // send measurement
     Measurement measurement;
@@ -164,22 +194,61 @@ void worker( ) {
   msgCount++;
 }
 
+// work process, called by the Heltec framework after deepsleep timeout
+void worker( ) {
+  vbat = getBatteryVoltage();
+  //printf("vbat=%d\n", vbat);
+  
+  if( !longSleep && vbat < 3750 ) {     // vbat is low, stop working
+    longSleep = true;
+    printf("longsleep\n");  delay(100);
+  }
+  else if( longSleep && vbat > 3850 ) {   // vbat is enough charged, wake-up and do a reset
+    longSleep = false;
+    printf("DOING HW RESET\n"); delay(100);
+    HW_Reset(0);
+  }
+
+  if( longSleep)
+    loRaWan.setSleepTime( 3600*1000);     // sleep one hour
+  else
+    procesSensors();                      // handle normal process
+}
+
+// LoRa receive handler (downnlink)
+void loraRxCallback( unsigned int port, unsigned char* msg, unsigned int len) {
+  printf("lora download message received port=%d cmd=%d len=%d\n", port, msg[0], len);
+
+  // if port is 01 and command byte is 0 then reset the sensor
+  if ( port == 1 && len >= 1 && msg[0] == 0) {
+     printf("DOING HW RESET\n"); delay(100);
+     HW_Reset(0);
+  }
+}
 
 // setup
 // initialize devices
 void setup() {
   boardInitMcu();
   
-  Serial.begin(115200); delay(100);
+  Serial.begin(115200); delay(200);
   pinMode(Vext,OUTPUT);
   digitalWrite(Vext, HIGH);  // GPS off
 
+  // assign soft Serial to SDS
+  portSDS = new SoftwareSerial( SDS_RX, SDS_TX);
+  portSDS->begin( 9600); delay( 200);
+  sds = new SDS011( *portSDS);
+  
+  Serial.print( "Starting Hittestress 2021 V"); Serial.println( VERSION);
+
   loRaWan.begin();
   loRaWan.setWorker( worker);
+  loRaWan.setRxHandler( loraRxCallback);    // set LoRa receive handler (downnlink)
   loRaWan.setSleepTime( CYCLETIME);
 }
 
 // run loop
 void loop() {
   loRaWan.process();
-}
+ }
