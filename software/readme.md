@@ -7,7 +7,7 @@ Three sensors are connected to the node:
 
 ![link](./overview.png)
 
-The Sensor sends each two minutes the Temperature, Humidity, Dust, PM10/PM2,5 to TTN. Each hour the Status and GPS position of the sensor is send to TTN.
+The Sensor sends each two minutes the Temperature, Humidity, Dust, PM10/PM2,5 to TTN. Each 4 hours the Status and GPS position of the sensor is send to TTN.
 
 ### Prototype
 The development is currently in a prototyping phase. 
@@ -20,9 +20,9 @@ To save power consumption, the CubeCell is forced into a deep sleep between two 
 
 ### Software prerequisites
 - Arduino development environmnet minumum version 1.8
-- Cube-Cell Development Framework V1.1 (can be installed in the Arduino board manager)
+- Cube-Cell Development Framework V1.3 (can be installed in the Arduino board manager)
 - DHT Adafruit sensor library
-- TinyGPS++ library  (Mikal Hart)
+- TinyGPS++ library (Mikal Hart)
 
 The LoRa stack and the SoftwareSerial is part of the CubeCell core. The adapted SDS011 library is present in the Hittestress source code.
 
@@ -36,14 +36,16 @@ Be sure that the correct board is selected and select the correct LoraWan parame
   - ADR ON
   - Upload UNCONFIRMED
   - Net Reservation OFF,
-  - AT Support ON,
-  - RGB ACTIVE
+  - AT Support OFF,
+  - RGB DEACTIVE   !!
   - Debug None
 
+Note: RGB must be deactivated otherwise a conflict occurs with the GPS powersuppply Vext.
+  
 ### TTN keys
 The following OTAA keys must be set in the file LoRaWan.h viz. **appEui** and **appKey**.
 **devEui** key must be left empty, this one is automatically set from the unique chipid of the HellTec board during startup.
-This makes it possible the use the same code for multiple sensors in your project.
+This makes it possible the use of the same code for multiple sensors in your project.
 
 ### Payload binary 
 Messages are sent on TTN port 15 (measurement data) and port 16 (status data)
@@ -53,6 +55,7 @@ Measurement payload on port 15:
 - byte 2, 3: Int16; Humidity * 100
 - byte 4, 5: Int16; PM10 * 100
 - byte 6, 7: Int16; PM2.5 * 100
+- byte 8, 9: Int16; Vbatttery * 1000
 
 Status Payload on port 16:
 - byte 0-3: Float: Latitude
@@ -72,7 +75,8 @@ Json example of a measurement message:
   "pm10": 0.9,
   "pm2p5": 0.46,
   "rh": 56.3,
-  "temp": 7.5
+  "temp": 7.5,
+  "vbat": 4.17
 }
 ```
 Json Example of a status message
@@ -86,4 +90,3 @@ Json Example of a status message
   "SwVer": 0.9
 }
 ```
-
