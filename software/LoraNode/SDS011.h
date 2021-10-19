@@ -9,7 +9,7 @@
 //
 // refactored (M. Meek)
 
-#include <SoftwareSerial.h>
+#include <softSerial.h>
 
 class SDS011 {
 	public:

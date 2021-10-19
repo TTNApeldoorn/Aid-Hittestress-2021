@@ -1,8 +1,8 @@
 // 23/7/2019: copied from 2018 Payload format. 
 // 6/8/2019 by MM: bugs solved, sign bit was not processed, Vcc en Vbat added to message 0xB
 // 5/10/2020 by MM cleanup message 0xA and 0xC removed
-// 25/04/2021 adapted for TTN V3
-// 25/04/2021 added, Little Endian decode functions for Hittestress 2021 port 15 en 16
+// 25/04/2021 adpated for TTN 
+// 25/04/2021 added decode Little Endian functions for Hittestress 2021 port 15 en 16
 
 function decodeUplink( input) {
 
@@ -78,6 +78,8 @@ function decodeUplink( input) {
         decoded.rh = bytesToInt16LE(bytes.slice(2)) / 100.0;
         decoded.pm2p5 = bytesToInt16LE(bytes.slice(4)) / 100.0;
         decoded.pm10 = bytesToInt16LE(bytes.slice(6)) / 100.0;
+        if( bytes.length >= 10) 
+          decoded.vbat = bytesToInt16LE(bytes.slice(8)) / 1000.0;
     }
     //  decode status
     else if (port == 16) {

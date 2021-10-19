@@ -44,6 +44,7 @@ SDS011::SDS011( Stream &s) {
 // --------------------------------------------------------
 int SDS011::read(float *p25, float *p10) {
   i=0;
+  memset( buf, 0, 20);
   while( stream->available() && i<100) {
     buf[ i] = stream->read();
     if( i >= 9 && buf[ i] == 171 && buf[i-9] == 170 && buf[i-8] == 192  ) {  // match
@@ -54,7 +55,7 @@ int SDS011::read(float *p25, float *p10) {
       pm10_serial += 256 * buf[i-4];
       *p10 = (float)pm10_serial /10.0;
       *p25 = (float)pm25_serial /10.0;
-      //Serial.print("i="); Serial.println(i);
+      // Serial.print("i="); Serial.println(i);
       return true;
     }
     else { 
